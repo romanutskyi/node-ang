@@ -7,7 +7,7 @@ pipeline {
     environment {
         COMMIT_ID="""${env.BUILD_TIMESTAMP}"""
         //"""${sh(returnStdout: true, script: 'git rev-parse --short HEAD')}"""
-        app = ''
+        //app = ''
     }
 
     stages {
