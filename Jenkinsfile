@@ -1,28 +1,40 @@
+// Initialize a LinkedHashMap / object to share between stages
+def pipelineContext = [:]
+
 pipeline {
     agent any
+
     environment {
         COMMIT_ID="""${env.BUILD_TIMESTAMP}"""
         //"""${sh(returnStdout: true, script: 'git rev-parse --short HEAD')}"""
         app = ''
     }
+
     stages {
+        stage('Configure') {
+            steps {
+                echo 'Create parameters file'
+            }
+        }
         stage('Build') {
             steps {
+                echo "Build docker image"
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_CREDS}') {
                         app = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                     }
+                    pipelineContext.dockerImage = app
                 }
             }
         }
-        
-        stage('Test') {
+        stage('Run') {
             steps {
-                @sh docker run --name ronapp_dev -p 8081:80 -t ${IMAGE_NAME}:${IMAGE_TAG} | docker stop ronapp_dev
-		//sh 'docker stop ronapp_dev'
+                echo "Run docker image"
+                script {
+                    pipelineContext.dockerContainer = pipelineContext.dockerImage.run()
+                }
             }
         }
-        
         stage('Push') {
             steps {
                 script {
@@ -32,6 +44,16 @@ pipeline {
                 }
             }
         }
+        
     }
-
+    post {
+        always {
+            echo "Stop Docker image"
+            script {
+                if (pipelineContext && pipelineContext.dockerContainer) {
+                    pipelineContext.dockerContainer.stop()
+                }
+            }
+        }
+    }
 }
