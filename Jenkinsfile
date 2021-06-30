@@ -18,7 +18,8 @@ pipeline {
         
         stage('Test') {
             steps {
-                sh 'docker run -p 8081:80 -t ${IMAGE_NAME}:${IMAGE_TAG}'
+                sh 'docker run --name ronapp_dev -p 8081:80 -t ${IMAGE_NAME}:${IMAGE_TAG}'
+		sh 'docker stop ronapp_dev'
             }
         }
         
