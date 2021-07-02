@@ -19,7 +19,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'docker run --name ronapp_dev -p 8081:80 -t ${IMAGE_NAME}:${IMAGE_TAG}'
-                sh 'docker stop ronapp_dev'
+                sh 'docker ps -f name=ronapp_dev -q | xargs --no-run-if-empty docker container stop'
+                sh 'docker container ls -a -fname=ronapp_dev -q | xargs -r docker container rm'
             }
         }
         
