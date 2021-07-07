@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
         COMMIT_ID="""${env.BUILD_TIMESTAMP}"""
-        //"""${sh(returnStdout: true, script: 'git rev-parse --short HEAD')}"""
         app = ''
     }
     stages {
@@ -27,12 +26,14 @@ pipeline {
 		sh 'docker stop $(docker ps -a -q)'
 	    }
 	}
+
         stage('Push') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_CREDS}') {
                         app.push("${COMMIT_ID}")
 		    sh 'docker rm $(docker ps -a -q)'
+		    sh 'docker rmi $(docker images -q) -f'
                     }
                 }
             }
