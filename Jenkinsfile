@@ -18,7 +18,7 @@ pipeline {
         
         stage('Test') {
             steps {
-                sh 'docker run -p 8081:80 -t ${IMAGE_NAME}:${IMAGE_TAG}'
+                sh 'docker run -d  -p 8081:80 -t ${IMAGE_NAME}:${IMAGE_TAG}'
             }
         }
         
