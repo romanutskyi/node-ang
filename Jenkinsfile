@@ -22,11 +22,17 @@ pipeline {
             }
         }
         
+	stage('Stop'){
+	    steps {
+		sh 'docker stop $(docker ps -a -q)'
+	    }
+	}
         stage('Push') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_CREDS}') {
-                        app.push("${COMMIT_ID}")                
+                        app.push("${COMMIT_ID}")
+		    sh 'docker rm $(docker ps -a -q)'
                     }
                 }
             }
