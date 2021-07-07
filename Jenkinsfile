@@ -23,30 +23,30 @@ pipeline {
         
     stage('Test') {
             steps {
-		script{
-	    withEnv([
+	script{
+        withEnv([
                 "ipaddrs=$FINAL_IP",
                 "appuri=http://$FINAL_IP:8081"
             ]){
             timeout(time: 15, unit: 'MINUTES') {
                 waitUntil {
                     try {         
-	              new URL("$appuri").getText()
-	           return true
+                  new URL("$appuri").getText()
+               return true
                     } 
                catch (Exception e) {
-	       return false
+           return false
                 }
         }
     }
 }
-	    
-		}
+        
+	}
             }
         }
     stage('Stop'){
         steps {
-	sh 'docker stop $(docker ps -a -q)'
+    sh 'docker stop $(docker ps -a -q)'
         }
     }
 
@@ -55,19 +55,8 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_CREDS}') {
                         app.push("${COMMIT_ID}")
-	    sh 'docker rm $(docker ps -a -q)'
-	    sh 'docker rmi $(docker images -q) -f'
-
-	stage('Ok') {
-            steps {
-                echo "Ok"
-            }
-        }
-    }
-    post {
-        always {
-            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
-        }
+        sh 'docker rm $(docker ps -a -q)'
+        sh 'docker rmi $(docker images -q) -f'
                     }
                 }
             }
