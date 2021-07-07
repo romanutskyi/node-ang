@@ -23,7 +23,7 @@ pipeline {
         
     stage('Test') {
             steps {
-	//script{
+		script{
 	    withEnv([
                 "ipaddrs=$FINAL_IP",
                 "appuri=http://$FINAL_IP:8081"
@@ -41,7 +41,7 @@ pipeline {
     }
 }
 	    
-	//}
+		}
             }
         }
     stage('Stop'){
