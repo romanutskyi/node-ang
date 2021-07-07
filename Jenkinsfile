@@ -50,17 +50,17 @@ pipeline {
         }
     }
 
-        stage('Push') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_CREDS}') {
-                        app.push("${COMMIT_ID}")
-        sh 'docker rm $(docker ps -a -q)'
-        sh 'docker rmi $(docker images -q) -f'
-                    }
-                }
-            }
-        }
+//        stage('Push') {
+//            steps {
+//                script {
+//                    docker.withRegistry('https://registry.hub.docker.com', '${DOCKER_CREDS}') {
+//                        app.push("${COMMIT_ID}")
+//        sh 'docker rm $(docker ps -a -q)'
+//        sh 'docker rmi $(docker images -q) -f'
+//                    }
+//                }
+//            }
+//        }
     }
     post {
         always {
