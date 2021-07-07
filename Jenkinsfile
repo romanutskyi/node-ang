@@ -26,7 +26,7 @@ pipeline {
 	script{
 	    withEnv([
                 "ipaddrs=$FINAL_IP",
-                "appuri=http://$FINAL_IP:8080"
+                "appuri=http://$FINAL_IP:8081"
             ]){
             timeout(time: 15, unit: 'MINUTES') {
                 waitUntil {
