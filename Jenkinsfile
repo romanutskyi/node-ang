@@ -57,6 +57,17 @@ pipeline {
                         app.push("${COMMIT_ID}")
 	    sh 'docker rm $(docker ps -a -q)'
 	    sh 'docker rmi $(docker images -q) -f'
+
+	stage('Ok') {
+            steps {
+                echo "Ok"
+            }
+        }
+    }
+    post {
+        always {
+            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+        }
                     }
                 }
             }
